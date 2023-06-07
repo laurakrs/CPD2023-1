@@ -1,29 +1,12 @@
+
 #Importa bibliotecas
 import math
 import time
-import timeit
+import timeit   #para usar no mac
 
 # Em C / C++
 # ./test < ENTRADA.TXT > SAIDA.TXT
 # fopen("ENTRADA.TXT")
-
-# Calcula o tempo EM MILISSEGUNDOS para a execução de uma função [func]
-def executionTime(func):
-    #guarda tempo de início da execução
-    start_time = time.time_ns()
-    start_time1 = timeit.default_timer()
-   
-
-    #executa função
-    func
-
-    #guarda tempo de fim da execução 
-    end_time = time.time_ns()
-    end_time1 = timeit.default_timer()
-    
-    #retorna a diferença entre tempo de início e fim (tempo total de execução da função)
-    #obs.: converte para milissegundos (ms)
-    return (end_time1-start_time1)* 1000.0
   
 # Leitura de arquivo txt
 
@@ -58,15 +41,6 @@ def writeFile(arquivo, conteudo):
     with open(arquivo, 'a') as arq:
         linhas = arq.writelines(str(conteudo))
         arq.close()
-
-
-## FUNCAO PARA REMOVER O PRIMEIRO ELEMENTO DO VETOR (LINHA) E CONFERIR SE CORRESPONDE AO TAMANHO CORRETO DO VETOR
-def checkLength(arr):
-  return arr.pop(0) == len(arr) # remove e confere se o primeiro elemento == a length
-
-
-listaComTamanho = [5, 1, 2, 3, 4, 5]
-checkLength(listaComTamanho)
 
 
 # EXERCICIO 1 - SHELLSORT
@@ -143,7 +117,6 @@ def genericShellSort(alist, gapsSequence, sequenceType): # FUNCAO GENERICA PARA 
 
     sublistcount = gapsSequence[0]
 
-    print(*alist, "SEQ=" + str(sequencia))
 
     #Junta todo o alist e o 'SEQ=' em uma única string para passar para a função writeFile
     string_to_write = ' '.join(map(str, alist)) + " SEQ=" + str(sequencia) + '\n'
@@ -176,6 +149,7 @@ def gapInsertionSort(alist,start,gap):  # CHAMA O INSERTION SORT
             position = position-gap
 
         alist[position]=currentvalue
+
 
 # FUNCAO MAIN
 
@@ -210,15 +184,22 @@ for lista in listasExercicio1:
   print('\t' + str(ciuraGap(lista)))
   genericShellSort(lista.copy(), ciuraGap(lista), 3)
 
+"""EXERCICIO 2
 
+Cronometre o tempo de execucao em vetores contendo numeros aleatorios de tamanho 100, 1000, 10000, 100000 e 
+1000000 para todas as tres sequencias da questao anterior. Estes vetores serao informados no arquivo entrada2.txt seguindo o mesmo formato da questao anterior.
+
+Em cada linha coloca-se o nome da sequencia usada, seguido do tamanho de vetor de entrada e tempo em milisegundos para ordenar o vetor
+usando o algoritmo de ShellSort e a sequencia respectiva, e ao final uma descricao do processador usado para rodar os testes. Os resultados devem
+ser colocados em um arquivo chamado saida2.txt.
+"""
 
 # EXERCICIO 2 - TESTES DE ESCALA
 #ENTRADA 2
 #SAIDA 2 = TEMPO EM MILISEGUNDOS 
 #NOME DA SEQUENCIA, TAMANHO DO VETOR DE ENTRADA, TEMPO EM MILISEGUNDOS, DESCRICAO DO PROCESSADOR
 
-
-  ### ---- GENERIC SORT 2 ---- Função que usa as divisões calculadas para implementar um algoritmo "genérico" de Shell Sort
+### ---- GENERIC SORT 2 ---- Função que usa as divisões calculadas para implementar um algoritmo "genérico" de Shell Sort
 ##
 
 def genericShellSort2(alist, gapsSequence, sequenceType): # FUNCAO GENERICA PARA ORDENAR
@@ -236,13 +217,6 @@ def genericShellSort2(alist, gapsSequence, sequenceType): # FUNCAO GENERICA PARA
         sequencia = '???'
 
     sublistcount = gapsSequence[0]
-
-    #print(*alist, "SEQ=" + str(sequencia))
-
-    #Junta todo o alist e o 'SEQ=' em uma única string para passar para a função writeFile
-    #string_to_write = ' '.join(map(str, alist)) + " SEQ=" + str(sequencia) + '\n'
-    #writeFile('/content/saida1.txt', string_to_write)
-
     
     while len(gapsSequence) > 0:
 
@@ -251,26 +225,70 @@ def genericShellSort2(alist, gapsSequence, sequenceType): # FUNCAO GENERICA PARA
       for startposition in range(sublistcount):
         gapInsertionSort(alist,startposition,sublistcount)
 
-      #print(*alist, "INCR=", sublistcount)
-      
-      #string_to_write = ' '.join(map(str, alist)) + " INCR=" + str(sublistcount) + '\n'
-      #writeFile('/content/saida1.txt', string_to_write)
-
       if len(gapsSequence) > 0:   # CONFERE NOVAMENTE SE NAO ESGOTOU O ARRAY DE GAPS
         sublistcount = gapsSequence[0]  # seleciona o que ficou em primeiro
+    
+    return alist    #retorna a lista ordenada
 
-
-# EXERCICIO 2
+# EXERCICIO 2 - UMA NOVA ESPERANÇA
 # Exemplo: 'SHELL,' + str(arr[0]) + ',' + str(executionTime(func)) +  'processador Intel i5'
-for lista2 in listasExercicio2: 
-  string_to_write = 'SHELL,' + str(len(lista2)) + ', ' + str(executionTime(genericShellSort2(lista2.copy(), shellGap(lista2), 1))) + ', INFORMACAO DO PROCESSADOR\n'
+
+informacao_proc = ',Informacao processador\n'
+
+for lista2 in listasExercicio2:
+
+  print('------------------------------------------------------------------------------------')
+  print('SHELL,' + str(len(lista2))) 
+  print('------------------------------------------------------------------------------------')
+
+  start_time = timeit.default_timer()
+  genericShellSort2(lista2.copy(), shellGap(lista2), 1)
+  end_time = timeit.default_timer()
+  result_time = (end_time - start_time) * 1000.00
+
+
+  print('start: ', start_time)
+  print('end: ', end_time)
+  print('result: ', result_time)
+
+  string_to_write = 'SHELL,' + str(len(lista2)) + ', ' + str(result_time) + informacao_proc
   writeFile('/Users/i576263/Desktop/CPD2023-1/saida2.txt', string_to_write)
 
-  string_to_write = 'KNUTH,' + str(len(lista2)) + ', ' + str(executionTime(genericShellSort2(lista2.copy(), knuthGap(lista2), 2))) + ', INFORMACAO DO PROCESSADOR\n'
+  print('------------------------------------------------------------------------------------')
+  print('KNUTH,' + str(len(lista2))) 
+  print('------------------------------------------------------------------------------------')
+  start_time = timeit.default_timer()
+  genericShellSort2(lista2.copy(), knuthGap(lista2), 2)
+  end_time = timeit.default_timer()
+  result_time = (end_time - start_time) * 1000.00
+
+  print('start: ', start_time)
+  print('end: ', end_time)
+  print('result: ', result_time)
+
+  string_to_write = 'KNUTH,' + str(len(lista2)) + ',' + str(result_time) + informacao_proc
   writeFile('/Users/i576263/Desktop/CPD2023-1/saida2.txt', string_to_write)
 
-  string_to_write = 'CIURA,' + str(len(lista2)) + ', ' + str(executionTime(genericShellSort2(lista2.copy(), ciuraGap(lista2), 3))) + ', INFORMACAO DO PROCESSADOR\n'
+  print('------------------------------------------------------------------------------------')
+  print('CIURA,' + str(len(lista2))) 
+  print('------------------------------------------------------------------------------------')
+
+  start_time = timeit.default_timer()
+  genericShellSort2(lista2.copy(), ciuraGap(lista2), 3)
+  end_time = timeit.default_timer()
+  result_time = (end_time - start_time) * 1000.00
+
+  string_to_write = 'CIURA,' + str(len(lista2)) + ', ' + str(result_time) + informacao_proc
   writeFile('/Users/i576263/Desktop/CPD2023-1/saida2.txt', string_to_write)
+
+
+  print('start: ', start_time)
+  print('end: ', end_time)
+  print('result: ', result_time)
+
+
+
+
 
 
 
